@@ -2,16 +2,21 @@ import userModel from "../models/auth.model.js";
 import Link from "../models/link.model.js";
 import ApiError from "../utils/apiError.js";
 
+// Analytics service:
+// Aggregates link-level data for a given username and validates that the requester
+// is the same user (ownership enforcement).
 export const getAnalyticsByUsernameService = async ({ username, requesterId }) => {
   const user = await userModel.findOne({ username });
   if (!user) {
     throw new ApiError(404, "User not found");
   }
 
+  // Ensure the authenticated requester is the owner of the requested username
   if (user._id.toString() !== requesterId) {
     throw new ApiError(403, "Unauthorized to access analytics for this user");
   }
 
+  // Fetch links and compute basic aggregates
   const links = await Link.find({ user: user._id }).sort({ clicks: -1 });
 
   const totalLinks = links.length;
@@ -20,7 +25,7 @@ export const getAnalyticsByUsernameService = async ({ username, requesterId }) =
   const mostClicked = links[0] || null;
   const leastClicked = links.slice().sort((a, b) => (a.clicks || 0) - (b.clicks || 0))[0] || null;
 
-  // Last 7 days activity (approximation using updatedAt)
+  // Last 7 days activity (approximation using updatedAt and aggregated clicks)
   const last7Days = [];
   for (let i = 6; i >= 0; i--) {
     const d = new Date();

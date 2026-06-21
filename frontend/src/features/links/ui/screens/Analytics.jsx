@@ -6,19 +6,21 @@ const BarChart = ({ data }) => {
   // data: [{label, value}]
   const max = Math.max(1, ...data.map((d) => d.value));
   const height = 160;
+  const paddingTop = 36; // allow space above bars for value labels
+  const viewBoxHeight = height + paddingTop;
   const barWidth = Math.max(24, Math.floor(600 / Math.max(1, data.length)) - 8);
 
   return (
-    <svg width="100%" height={height} viewBox={`0 0 ${data.length * (barWidth + 8)} ${height}`}>
+    <svg width="100%" height={viewBoxHeight} viewBox={`0 0 ${data.length * (barWidth + 8)} ${viewBoxHeight}`} preserveAspectRatio="xMidYMid meet" style={{ overflow: 'visible' }}>
       {data.map((d, i) => {
         const h = (d.value / max) * (height - 40);
         const x = i * (barWidth + 8);
-        const y = height - h - 30;
+        const y = viewBoxHeight - h - 30;
         return (
           <g key={i} transform={`translate(${x},0)`}> 
             <rect x={0} y={y} width={barWidth} height={h} rx={6} fill="#6366F1" />
-            <text x={barWidth / 2} y={height - 12} fontSize={12} textAnchor="middle" fill="#374151">{d.label}</text>
-            <text x={barWidth / 2} y={y - 6} fontSize={12} textAnchor="middle" fill="#111827">{d.value}</text>
+            <text x={barWidth / 2} y={viewBoxHeight - 12} fontSize={12} textAnchor="middle" fill="#374151">{d.label}</text>
+            <text x={barWidth / 2} y={Math.max(12, y - 6)} fontSize={12} textAnchor="middle" fill="#111827">{d.value}</text>
           </g>
         );
       })}
