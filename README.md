@@ -48,7 +48,7 @@ Backend Flow (Auth & Links)
 
 Frontend Flow (State & UI)
 - Tech: React + Vite + Tailwind + Redux Toolkit.
-- Axios: `frontend/src/config/axiosInstance.js` sets baseURL (http://localhost:5000) and `withCredentials: true`.
+- Axios: `frontend/src/config/axiosInstance.js` sets baseURL (http://localhost:3000) and `withCredentials: true`.
 - Auth state:
   - Auth thunks `loginEmployee`, `registerEmployee`, `currentEmployee` live in `features/auth/state/` and store `user` in Redux and `localStorage` under key `user` for hydration.
   - Routes and protected routes use `store.auth.user` to check authentication.
