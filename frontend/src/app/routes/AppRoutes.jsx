@@ -18,7 +18,7 @@ import ProtectedRoute from "../ProtectedRoutes/ProtectedRoute";
 const AppRoutes = () => {
   let dispatch = useDispatch();
   useEffect(() => {
-    // hydrate from localStorage if present, otherwise try /me
+
     (() => {
       try {
         const stored = localStorage.getItem("user");

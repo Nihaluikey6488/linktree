@@ -42,7 +42,7 @@ const Profile = () => {
 
           <div className="mt-8 space-y-4">
             {links.map((l) => (
-              <LinkCard key={l._id} link={l} onClick={handleClick} />
+              <LinkCard key={l._id} link={l} onClick={handleClick} showClicks={false} />
             ))}
             {links.length === 0 && <div className="text-gray-600">No links yet.</div>}
           </div>

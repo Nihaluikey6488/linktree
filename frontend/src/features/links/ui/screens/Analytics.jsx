@@ -29,28 +29,33 @@ const BarChart = ({ data }) => {
 const Analytics = () => {
   const { user } = useSelector((s) => s.auth);
   const username = user?.user?.username || user?.username;
-  const { getLinksByUsername } = useLinks();
-  const [links, setLinks] = useState([]);
+  const { getAnalyticsByUsername } = useLinks();
+  const [analytics, setAnalytics] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     if (!username) return;
     (async () => {
+      setLoading(true);
       try {
-        const res = await getLinksByUsername(username);
-        setLinks(res || []);
+        const res = await getAnalyticsByUsername(username);
+        setAnalytics(res || null);
       } catch (err) {
-        console.error(err);
+        setError(err);
+      } finally {
+        setLoading(false);
       }
     })();
   }, [username]);
 
-  const totalClicks = links.reduce((s, l) => s + (l.clicks || 0), 0);
-  const totalLinks = links.length;
-  const mostClicked = [...links].sort((a, b) => (b.clicks || 0) - (a.clicks || 0))[0];
+  const totalClicks = analytics?.totalClicks || 0;
+  const totalLinks = analytics?.totalLinks || 0;
+  const mostClicked = analytics?.mostClicked || null;
 
-  const chartData = links.map((l) => ({ label: l.title.length > 10 ? l.title.slice(0, 10) + "..." : l.title, value: l.clicks || 0 }));
+  const chartData = (analytics?.links || []).map((l) => ({ label: l.title.length > 10 ? l.title.slice(0, 10) + "..." : l.title, value: l.totalClicks || 0 }));
 
-  const recent = [...links].sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)).slice(0, 5);
+  const recent = analytics?.recentActivity || [];
 
   return (
     <div className="p-6">
@@ -73,7 +78,7 @@ const Analytics = () => {
             <div className="font-medium mt-2">{mostClicked ? mostClicked.title : "-"}</div>
             <div className="text-sm text-gray-400">{mostClicked ? `${mostClicked.clicks} clicks` : ""}</div>
           </div>
-          <div className="text-xs text-gray-400 mt-4">Updated: {mostClicked ? new Date(mostClicked.updatedAt).toLocaleString() : "-"}</div>
+          <div className="text-xs text-gray-400 mt-4">Updated: {mostClicked ? new Date(mostClicked.updatedAt || Date.now()).toLocaleString() : "-"}</div>
         </div>
       </div>
 
@@ -86,7 +91,15 @@ const Analytics = () => {
         </div>
 
         <div className="overflow-x-auto">
-          {chartData.length ? <BarChart data={chartData} /> : <div className="text-gray-500 py-6">No data to display.</div>}
+          {loading ? (
+            <div className="text-gray-500 py-6">Loading...</div>
+          ) : error ? (
+            <div className="text-red-500 py-6">Error loading analytics.</div>
+          ) : chartData.length ? (
+            <BarChart data={chartData} />
+          ) : (
+            <div className="text-gray-500 py-6">No data to display.</div>
+          )}
         </div>
       </div>
 
@@ -94,29 +107,29 @@ const Analytics = () => {
         <div className="bg-white rounded-2xl p-6 shadow">
           <div className="text-sm text-gray-500 mb-2">Links Performance</div>
           <div className="space-y-3">
-            {links.map((l) => (
-              <div key={l._id} className="flex items-center justify-between gap-4">
+            {(analytics?.links || []).map((l) => (
+              <div key={l.id} className="flex items-center justify-between gap-4">
                 <div className="flex-1">
                   <div className="font-medium text-gray-800">{l.title}</div>
                   <div className="text-xs text-gray-400">{l.url}</div>
                 </div>
                 <div className="w-32 text-right">
-                  <div className="text-sm font-semibold">{l.clicks || 0}</div>
+                  <div className="text-sm font-semibold">{l.totalClicks || 0}</div>
                 </div>
               </div>
             ))}
-            {links.length === 0 && <div className="text-gray-500">No links available.</div>}
+            {(analytics?.links || []).length === 0 && <div className="text-gray-500">No links available.</div>}
           </div>
         </div>
 
         <div className="bg-white rounded-2xl p-6 shadow">
           <div className="text-sm text-gray-500 mb-2">Recent Activity</div>
           <div className="space-y-3">
-            {recent.map((r) => (
-              <div key={r._id} className="flex items-center justify-between">
+            {recent.map((r, idx) => (
+              <div key={idx} className="flex items-center justify-between">
                 <div>
                   <div className="font-medium">{r.title}</div>
-                  <div className="text-xs text-gray-400">{new Date(r.updatedAt).toLocaleString()}</div>
+                  <div className="text-xs text-gray-400">{new Date(r.lastClickedDate).toLocaleString()}</div>
                 </div>
                 <div className="text-sm text-gray-500">{r.clicks || 0} clicks</div>
               </div>

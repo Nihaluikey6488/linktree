@@ -19,6 +19,20 @@ export const useLinks = () => {
     }
   };
 
+  const getAnalyticsByUsername = async (username) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await axiosInstance.get(`/api/links/${username}/analytics`);
+      setLoading(false);
+      return res.data.data.analytics;
+    } catch (err) {
+      setError(err);
+      setLoading(false);
+      throw err;
+    }
+  };
+
   const createLink = async (payload) => {
     setLoading(true);
     setError(null);
@@ -73,6 +87,7 @@ export const useLinks = () => {
 
   return {
     getLinksByUsername,
+    getAnalyticsByUsername,
     createLink,
     incrementClick,
     loading,

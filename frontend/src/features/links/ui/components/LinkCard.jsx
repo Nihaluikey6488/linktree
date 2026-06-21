@@ -1,6 +1,6 @@
 import React from "react";
 
-const LinkCard = ({ link, onClick, onCopy, compact = false }) => {
+const LinkCard = ({ link, onClick, onCopy, compact = false, showClicks = true }) => {
   if (!compact) {
     return (
       <div className="w-full">
@@ -12,7 +12,7 @@ const LinkCard = ({ link, onClick, onCopy, compact = false }) => {
             <div className="text-lg font-semibold text-gray-800">{link.title}</div>
             <div className="text-sm text-gray-500 mt-1 truncate max-w-xl">{link.url}</div>
           </div>
-          <div className="text-sm text-gray-400">{link.clicks}</div>
+          {showClicks && <div className="text-sm text-gray-400">{link.clicks}</div>}
         </button>
       </div>
     );
