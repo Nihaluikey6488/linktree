@@ -18,7 +18,7 @@ export const loginController=async(req,res)=>{
         maxAge:60*60*1000
         
     })
-   return res.status(200).json(new ApiResponse("Logged in successfully",{     user,
+   return res.status(200).json(new ApiResponse("Logged in successfully",{ user,
 })) 
 }
  

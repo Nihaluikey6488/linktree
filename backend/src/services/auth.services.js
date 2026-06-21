@@ -18,7 +18,7 @@ export const registerService = async (data) => {
   });
   let token = await generateToken(user);
   return {
-    isExisted,
+    user,
     token,
   };
 };
