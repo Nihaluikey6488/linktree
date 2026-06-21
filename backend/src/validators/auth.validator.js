@@ -16,11 +16,11 @@ export const registerValidate = [
     .withMessage("Password must be at least 6 characters long"),
 ];
 
-export const loginValidator = [
-  body("identifier")
+export const loginValidate = [
+  body("email")
     .trim()
     .notEmpty()
-    .withMessage("Username or Email is required"),
+    .withMessage("Email is required"),
 
   body("password")
     .notEmpty()

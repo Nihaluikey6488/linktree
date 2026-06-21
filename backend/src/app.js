@@ -12,6 +12,7 @@ app.use(cookirParser());
 app.use("/api/auth",authRoutes)
 app.use((err,req,res,next)=>{
 console.log("error",err)
+
     let statusCode=err.status || 500
     let message=err.message || "Internal server error"
     res.status(statusCode).json({

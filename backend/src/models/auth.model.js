@@ -31,7 +31,7 @@ userSchema.pre("save", async function () {
   this.password = await bcrypt.hashSync(this.password, 10);
 });
 userSchema.methods.comparePassword = function (password) {
-  return bcrypt.comparePasswordSync(password, this.password);
+  return bcrypt.compareSync(password, this.password);
 };
 
 const userModel = model("User", userSchema);

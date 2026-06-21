@@ -1,9 +1,9 @@
 import jwt from "jsonwebtoken";
 
-const genearateToken = (payload) => {
+const generateToken = (payload) => {
   return jwt.sign({payload}, process.env.JWT_SECRET, {
     expiresIn: "1h",
   });
 };
 
-export default genearateToken;
+export default generateToken;
