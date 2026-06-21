@@ -14,7 +14,7 @@ Quick Start
     # set environment variables (MONGO_URI, JWT_SECRET)
     npm run dev
     ```
-  - Defaults: server runs on `http://localhost:5000` (check `backend/package.json` scripts).
+  - Defaults: server runs on `http://localhost:3000` (check `backend/package.json` scripts).
 
 - Frontend
   - Install and run:
